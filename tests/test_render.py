@@ -14,6 +14,9 @@ class PollPluginRenderTest(TestCase):
         self.placeholder = Placeholder.objects.create(slot='test')
         self.poll = Poll.objects.create(question='Do you like my plugin?')
 
+    def add_choice(self, text):
+        return self.poll.choice_set.create(text=text)
+
     def add_plugin(self, **kwargs):
         model_instance = add_plugin(
             self.placeholder,
@@ -57,3 +60,15 @@ class PollPluginRenderTest(TestCase):
 
         self.assertIn('next', hidden)
         self.assertEqual(hidden['next']['value'], '/foo/bar/')
+
+    def test_choices(self):
+        self.add_choice('Yes')
+        self.add_choice('No')
+        self.add_choice('This is not the choice you are looking for')
+        plugin = self.add_plugin(poll=self.poll)
+
+        html = self.render(plugin)
+        soup = BeautifulSoup(html)
+        choices = {int(i['value']) for i in soup.form.find_all(type='radio')}
+        self.assertEqual(
+            choices, set(self.poll.choice_set.values_list('id', flat=True)))
