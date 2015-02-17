@@ -7,7 +7,11 @@ cmsplugin-polls
 .. |ci| image:: https://travis-ci.org/satyrius/cmsplugin-polls.png?branch=master
     :target: https://travis-ci.org/satyrius/cmsplugin-polls
 
-There is no established Polls plugin for DjangoCMS, so this one could be at the spot.
+Why?
+====
+There is no established Polls plugin for DjangoCMS. Yes, `cmsplugin-poll <https://bitbucket.org/tonioo/cmsplugin-poll>`_ exists, 
+but it's latest update was at 2013 and looks like it is abandoned. Personaly I want a simple plugin, that is up to date and support
+latest Django and DjangoCMS. So this one could be at the spot.
 
 Requirements
 ============
