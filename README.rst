@@ -2,6 +2,11 @@
 cmsplugin-polls
 ================
 
+|ci|
+
+.. |ci| image:: https://travis-ci.org/satyrius/cmsplugin-polls.png?branch=master
+    :target: https://travis-ci.org/satyrius/cmsplugin-polls
+
 There is no established Polls plugin for DjangoCMS, so this one could be at the spot.
 
 Requirements
