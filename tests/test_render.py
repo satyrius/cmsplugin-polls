@@ -9,7 +9,7 @@ from cmsplugin_polls.models import Poll
 from cmsplugin_polls.cms_plugins import PollPlugin
 
 
-class PollPluginTests(TestCase):
+class PollPluginRenderTest(TestCase):
     def setUp(self):
         self.placeholder = Placeholder.objects.create(slot='test')
         self.poll = Poll.objects.create(question='Do you like my plugin?')
