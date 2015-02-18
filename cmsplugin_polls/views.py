@@ -22,7 +22,14 @@ def vote(request):
 
     choice = request.POST.get('choice')
     if choice:
-        poll.choice_set.filter(id=choice).update(votes=F('votes') + 1)
+        try:
+            choice = int(choice)
+        except ValueError:
+            rows = 0
+        else:
+            rows = poll.choice_set.filter(id=choice).update(votes=F('votes') + 1)
+        if not rows:
+            return http.HttpResponseBadRequest('Invalid choice')
 
     next_page = request.POST.get('next', referer)
     if next_page:

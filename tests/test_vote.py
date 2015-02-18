@@ -53,3 +53,12 @@ class VoteViewTest(TestCase):
 
         no = self.reload(no)
         self.assertEqual(no.votes, 0)
+
+    def test_invalid_choice(self):
+        yes = self.add_choice('Yes')
+        foo = yes.id + 1
+        res = self.vote(data={'choice': foo}, assert_code=400)
+        self.assertEqual(res.content, 'Invalid choice')
+
+        res = self.vote(data={'choice': 'bar'}, assert_code=400)
+        self.assertEqual(res.content, 'Invalid choice')
