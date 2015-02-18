@@ -39,3 +39,17 @@ class VoteViewTest(TestCase):
         # If nothig above, he just got an OK page
         res = self.vote()
         self.assertEqual(res.content, 'OK')
+
+    def reload(self, obj):
+        return obj.__class__.objects.get(pk=obj.pk)
+
+    def test_choice(self):
+        yes = self.add_choice('Yes')
+        no = self.add_choice('No')
+        self.vote(data={'choice': yes.id})
+
+        yes = self.reload(yes)
+        self.assertEqual(yes.votes, 1)
+
+        no = self.reload(no)
+        self.assertEqual(no.votes, 0)
