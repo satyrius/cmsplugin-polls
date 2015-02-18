@@ -1,7 +1,10 @@
 from django.http import HttpResponseRedirect
+from django.views.decorators.http import require_POST
+
 from .models import Poll
 
 
+@require_POST
 def vote(request):
     poll_id = request.POST.get('poll')
     Poll.object.get(poll_id)
