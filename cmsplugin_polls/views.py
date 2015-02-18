@@ -34,5 +34,7 @@ def vote(request):
     next_page = request.POST.get('next', referer)
     if next_page:
         return http.HttpResponseRedirect(next_page)
+    elif not choice:
+        return http.HttpResponseBadRequest('There is no choice')
     else:
         return http.HttpResponse('OK')

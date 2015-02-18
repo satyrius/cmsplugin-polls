@@ -5,6 +5,7 @@ class VoteViewTest(TestCase):
     def setUp(self):
         super(VoteViewTest, self).setUp()
         self.url = '/polls/vote'
+        self.server = 'http://testserver'
 
     def test_get_not_allowed(self):
         res = self.client.get(self.url)
@@ -24,20 +25,21 @@ class VoteViewTest(TestCase):
         self.post(data={'poll': 'foo'}, assert_code=400)
 
     def test_redirect_on_success(self):
-        server = 'http://testserver'
+        yes = self.add_choice('Yes')
 
         # The use will be redirected to the 'next' url if specified
         url = '/foo/bar/'
-        res = self.vote(data={'next': url}, assert_code=302)
-        self.assertEqual(res['Location'], server + url)
+        res = self.vote(data={'choice': yes.id, 'next': url}, assert_code=302)
+        self.assertEqual(res['Location'], self.server + url)
 
         # Otherwise the HTTP_REFERER will be used to redirect user back
         ref = '/bla/bla/'
-        res = self.vote(assert_code=302, **{'HTTP_REFERER': ref})
-        self.assertEqual(res['Location'], server + ref)
+        res = self.vote(data={'choice': yes.id}, assert_code=302,
+                        **{'HTTP_REFERER': ref})
+        self.assertEqual(res['Location'], self.server + ref)
 
         # If nothig above, he just got an OK page
-        res = self.vote()
+        res = self.vote(data={'choice': yes.id})
         self.assertEqual(res.content, 'OK')
 
     def reload(self, obj):
@@ -62,3 +64,14 @@ class VoteViewTest(TestCase):
 
         res = self.vote(data={'choice': 'bar'}, assert_code=400)
         self.assertEqual(res.content, 'Invalid choice')
+
+    def test_no_choice(self):
+        self.add_choice('Yes')
+
+        # Just got a redirect if there is not choice
+        url = '/foo/bar/'
+        res = self.vote(data={'next': url}, assert_code=302)
+        self.assertEqual(res['Location'], self.server + url)
+
+        # But return bad request if no next location
+        self.vote(assert_code=400)
