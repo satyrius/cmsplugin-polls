@@ -8,6 +8,7 @@ from .models import Poll
 @require_POST
 def vote(request):
     referer = request.META.get('HTTP_REFERER')
+    next_page = request.POST.get('next', referer)
 
     poll_id = request.POST.get('poll')
     try:
@@ -20,6 +21,13 @@ def vote(request):
     if error:
         return http.HttpResponseBadRequest(error)
 
+    voted_key = 'cmsplugin_poll_voted_{i}'.format(i=poll.id)
+    if request.session.get(voted_key):
+        if next_page:
+            return http.HttpResponseRedirect(next_page)
+        else:
+            return http.HttpResponseForbidden('You had voted')
+
     choice = request.POST.get('choice')
     if choice:
         try:
@@ -30,8 +38,8 @@ def vote(request):
             rows = poll.choice_set.filter(id=choice).update(votes=F('votes') + 1)
         if not rows:
             return http.HttpResponseBadRequest('Invalid choice')
+        request.session[voted_key] = True
 
-    next_page = request.POST.get('next', referer)
     if next_page:
         return http.HttpResponseRedirect(next_page)
     elif not choice:

@@ -31,12 +31,14 @@ class VoteViewTest(TestCase):
         url = '/foo/bar/'
         res = self.vote(data={'choice': yes.id, 'next': url}, assert_code=302)
         self.assertEqual(res['Location'], self.server + url)
+        self.client.logout()
 
         # Otherwise the HTTP_REFERER will be used to redirect user back
         ref = '/bla/bla/'
         res = self.vote(data={'choice': yes.id}, assert_code=302,
                         **{'HTTP_REFERER': ref})
         self.assertEqual(res['Location'], self.server + ref)
+        self.client.logout()
 
         # If nothig above, he just got an OK page
         res = self.vote(data={'choice': yes.id})
@@ -75,3 +77,16 @@ class VoteViewTest(TestCase):
 
         # But return bad request if no next location
         self.vote(assert_code=400)
+
+    def test_stop_voting_twice(self):
+        yes = self.add_choice('Yes')
+        self.vote(data={'choice': yes.id})
+        self.vote(data={'choice': yes.id}, assert_code=403)
+
+        # Another poll has its own restrictions
+        self.poll = self.create_poll(question='Wanna survey?')
+        yes = self.add_choice('Sure')
+        self.vote(data={'choice': yes.id})
+        self.vote(data={'choice': yes.id}, assert_code=403)
+        # Silently redirect is has location
+        self.vote(data={'choice': yes.id, 'next': '/foo/bar/'}, assert_code=302)

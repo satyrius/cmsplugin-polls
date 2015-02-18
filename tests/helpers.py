@@ -9,7 +9,10 @@ from cmsplugin_polls.cms_plugins import PollPlugin
 class TestCase(DjangoTestCase):
     def setUp(self):
         self.placeholder = Placeholder.objects.create(slot='test')
-        self.poll = Poll.objects.create(question='Do you like my plugin?')
+        self.poll = self.create_poll(question='Do you like my plugin?')
+
+    def create_poll(self, *args, **kwargs):
+        return Poll.objects.create(*args, **kwargs)
 
     def add_choice(self, text, **kwargs):
         return self.poll.choice_set.create(text=text, **kwargs)

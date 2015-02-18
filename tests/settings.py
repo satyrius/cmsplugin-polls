@@ -19,6 +19,7 @@ DATABASES = {
 INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.auth',
+    'django.contrib.sessions',
     'django.contrib.sites',
     'django_nose',
     'cms',
@@ -26,6 +27,12 @@ INSTALLED_APPS = [
     'mptt',
     'cmsplugin_polls',
 ]
+
+MIDDLEWARE_CLASSES = (
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+)
 
 TEMPLATE_CONTEXT_PROCESSORS = [
     'django.core.context_processors.request',
