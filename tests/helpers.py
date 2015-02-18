@@ -11,8 +11,8 @@ class TestCase(DjangoTestCase):
         self.placeholder = Placeholder.objects.create(slot='test')
         self.poll = Poll.objects.create(question='Do you like my plugin?')
 
-    def add_choice(self, text):
-        return self.poll.choice_set.create(text=text)
+    def add_choice(self, text, **kwargs):
+        return self.poll.choice_set.create(text=text, **kwargs)
 
     def add_plugin(self, **kwargs):
         model_instance = add_plugin(

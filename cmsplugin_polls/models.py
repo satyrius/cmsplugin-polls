@@ -8,6 +8,10 @@ class Poll(models.Model):
     def __unicode__(self):
         return self.question
 
+    @property
+    def votes(self):
+        return self.choice_set.aggregate(models.Sum('votes'))['votes__sum']
+
 
 class Choice(models.Model):
     poll = models.ForeignKey(Poll)
