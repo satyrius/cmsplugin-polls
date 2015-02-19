@@ -7,4 +7,5 @@ class PollTest(TestCase):
         self.add_choice('No', votes=2)
         self.add_choice('Not sure', votes=0)
         self.assertEqual(self.poll.choice_set.count(), 3)
-        self.assertEqual(self.poll.votes, 12)
+        self.assertEqual(self.poll.total_votes, 12)
+        self.assertEqual(self.poll.max_votes, 10)

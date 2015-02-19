@@ -9,8 +9,12 @@ class Poll(models.Model):
         return self.question
 
     @property
-    def votes(self):
+    def total_votes(self):
         return self.choice_set.aggregate(models.Sum('votes'))['votes__sum']
+
+    @property
+    def max_votes(self):
+        return self.choice_set.aggregate(models.Max('votes'))['votes__max']
 
 
 class Choice(models.Model):
