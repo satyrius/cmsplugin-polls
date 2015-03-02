@@ -1,11 +1,14 @@
 from cms.models import CMSPlugin
 from django.db import models
 from django.db.models import F
+from django.utils import timezone
 
 
 class Poll(models.Model):
     question = models.CharField(max_length=200)
     is_active = models.BooleanField(default=True)
+    starts_at = models.DateTimeField(auto_now_add=True)
+    ends_at = models.DateTimeField(null=True, blank=True)
 
     def __unicode__(self):
         return self.question
@@ -24,6 +27,10 @@ class Poll(models.Model):
 
     def can_vote(self, request=None):
         if not self.is_active:
+            return False
+        if self.starts_at and self.starts_at > timezone.now():
+            return False
+        if self.ends_at and self.ends_at < timezone.now():
             return False
         if not request or not hasattr(request, 'session'):
             return True

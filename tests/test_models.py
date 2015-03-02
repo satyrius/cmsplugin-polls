@@ -1,5 +1,7 @@
+import datetime as dt
 from helpers import TestCase
 from django.http import HttpRequest
+from freezegun import freeze_time
 from mock import patch
 from cmsplugin_polls.models import Poll
 
@@ -46,6 +48,18 @@ class PollTest(TestCase):
 
         self.poll.is_active = False
         self.assertFalse(self.poll.can_vote())
+
+    @freeze_time('2015-03-02 20:00:00')
+    def test_can_vote_in_specified_period(self):
+        self.poll.starts_at = dt.datetime.now() + dt.timedelta(hours=12)
+        self.assertFalse(self.poll.can_vote())
+        self.poll.starts_at = dt.datetime.now() - dt.timedelta(hours=12)
+        self.assertTrue(self.poll.can_vote())
+
+        self.poll.ends_at = dt.datetime.now() - dt.timedelta(hours=1)
+        self.assertFalse(self.poll.can_vote())
+        self.poll.ends_at = dt.datetime.now() + dt.timedelta(hours=1)
+        self.assertTrue(self.poll.can_vote())
 
     @patch.object(Poll, 'can_vote', return_value=True)
     def test_vote(self, can_vote):
