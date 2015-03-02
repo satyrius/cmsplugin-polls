@@ -1,5 +1,4 @@
 from django import http
-from django.db.models import F
 from django.views.decorators.http import require_POST
 
 from .models import Poll
@@ -29,15 +28,8 @@ def vote(request):
 
     choice = request.POST.get('choice')
     if choice:
-        try:
-            choice = int(choice)
-        except ValueError:
-            rows = 0
-        else:
-            rows = poll.choice_set.filter(id=choice).update(votes=F('votes') + 1)
-        if not rows:
+        if not poll.vote(choice, request):
             return http.HttpResponseBadRequest('Invalid choice')
-        request.session[poll.voted_key] = True
 
     if next_page:
         return http.HttpResponseRedirect(next_page)

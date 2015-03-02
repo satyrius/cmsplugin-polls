@@ -1,5 +1,7 @@
 from helpers import TestCase
 from django.http import HttpRequest
+from mock import patch
+from cmsplugin_polls.models import Poll
 
 
 class PollTest(TestCase):
@@ -37,3 +39,32 @@ class PollTest(TestCase):
         # But cannot vote if user has already voted
         request.session = {self.poll.voted_key: True}
         self.assertFalse(self.poll.can_vote(request))
+
+    @patch.object(Poll, 'can_vote', return_value=True)
+    def test_vote(self, can_vote):
+        yes = self.add_choice('Yes')
+        self.assertEqual(yes.votes, 0)
+        no = self.add_choice('No')
+        self.assertEqual(no.votes, 0)
+        request = HttpRequest()
+        request.session = {}
+
+        # Invalid choice id
+        self.assertEqual(self.poll.vote('yes'), 0)
+        self.assertFalse(can_vote.called)
+        self.assertEqual(self.poll.total_votes, 0)
+
+        can_vote.return_value = False
+        self.assertEqual(self.poll.vote(yes.id, request), 0)
+        can_vote.assert_called_once_with(request)
+        self.assertEqual(self.poll.total_votes, 0)
+
+        can_vote.return_value = True
+        can_vote.reset_mock()
+        self.assertEqual(self.poll.vote(yes.id, request), 1)
+        can_vote.assert_called_once_with(request)
+        self.assertEqual(self.poll.total_votes, 1)
+        self.assertEqual(self.reload_choice(yes).votes, 1)
+        self.assertEqual(self.reload_choice(no).votes, 0)
+
+        self.assertTrue(request.session[self.poll.voted_key])

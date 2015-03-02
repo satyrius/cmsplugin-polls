@@ -17,6 +17,9 @@ class TestCase(DjangoTestCase):
     def add_choice(self, text, **kwargs):
         return self.poll.choice_set.create(text=text, **kwargs)
 
+    def reload_choice(self, choice):
+        return self.poll.choice_set.get(id=choice.id)
+
     def add_plugin(self, **kwargs):
         model_instance = add_plugin(
             self.placeholder,

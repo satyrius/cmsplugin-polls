@@ -1,5 +1,6 @@
 from cms.models import CMSPlugin
 from django.db import models
+from django.db.models import F
 
 
 class Poll(models.Model):
@@ -24,6 +25,18 @@ class Poll(models.Model):
         if not request or not hasattr(request, 'session'):
             return True
         return not request.session.get(self.voted_key, False)
+
+    def vote(self, choice, request=None):
+        try:
+            choice = int(choice)
+        except ValueError:
+            return 0
+        if not self.can_vote(request):
+            return 0
+        rows = self.choice_set.filter(id=choice).update(votes=F('votes') + 1)
+        if rows and request and hasattr(request, 'session'):
+            request.session[self.voted_key] = True
+        return rows
 
 
 class Choice(models.Model):
