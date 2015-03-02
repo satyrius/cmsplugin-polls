@@ -18,13 +18,13 @@ class Poll(models.Model):
         return self.choice_set.aggregate(models.Max('votes'))['votes__max']
 
     @property
-    def voted_key(self):
+    def _voted_key(self):
         return 'cmsplugin_poll_voted_{i}'.format(i=self.id)
 
     def can_vote(self, request=None):
         if not request or not hasattr(request, 'session'):
             return True
-        return not request.session.get(self.voted_key, False)
+        return not request.session.get(self._voted_key, False)
 
     def vote(self, choice, request=None):
         try:
@@ -35,7 +35,7 @@ class Poll(models.Model):
             return 0
         rows = self.choice_set.filter(id=choice).update(votes=F('votes') + 1)
         if rows and request and hasattr(request, 'session'):
-            request.session[self.voted_key] = True
+            request.session[self._voted_key] = True
         return rows
 
 

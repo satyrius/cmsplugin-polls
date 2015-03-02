@@ -15,11 +15,11 @@ class PollTest(TestCase):
 
     def test_voted_key(self):
         poll1 = self.create_poll(question='Foo')
-        k1 = poll1.voted_key
+        k1 = poll1._voted_key
         self.assertIn(str(poll1.id), k1)
 
         poll2 = self.create_poll(question='Bar')
-        k2 = poll2.voted_key
+        k2 = poll2._voted_key
         self.assertIn(str(poll2.id), k2)
 
         self.assertNotEqual(k1, k2)
@@ -33,11 +33,11 @@ class PollTest(TestCase):
         self.assertTrue(self.poll.can_vote(request))
 
         # And if not voted yet
-        request.session = {self.poll.voted_key: False}
+        request.session = {self.poll._voted_key: False}
         self.assertTrue(self.poll.can_vote(request))
 
         # But cannot vote if user has already voted
-        request.session = {self.poll.voted_key: True}
+        request.session = {self.poll._voted_key: True}
         self.assertFalse(self.poll.can_vote(request))
 
     @patch.object(Poll, 'can_vote', return_value=True)
@@ -67,4 +67,4 @@ class PollTest(TestCase):
         self.assertEqual(self.reload_choice(yes).votes, 1)
         self.assertEqual(self.reload_choice(no).votes, 0)
 
-        self.assertTrue(request.session[self.poll.voted_key])
+        self.assertTrue(request.session[self.poll._voted_key])
