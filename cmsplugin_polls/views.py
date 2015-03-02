@@ -21,8 +21,7 @@ def vote(request):
     if error:
         return http.HttpResponseBadRequest(error)
 
-    voted_key = poll.voted_key
-    if request.session.get(voted_key):
+    if not poll.can_vote(request):
         if next_page:
             return http.HttpResponseRedirect(next_page)
         else:
@@ -38,7 +37,7 @@ def vote(request):
             rows = poll.choice_set.filter(id=choice).update(votes=F('votes') + 1)
         if not rows:
             return http.HttpResponseBadRequest('Invalid choice')
-        request.session[voted_key] = True
+        request.session[poll.voted_key] = True
 
     if next_page:
         return http.HttpResponseRedirect(next_page)

@@ -1,4 +1,5 @@
 from helpers import TestCase
+from django.http import HttpRequest
 
 
 class PollTest(TestCase):
@@ -20,3 +21,19 @@ class PollTest(TestCase):
         self.assertIn(str(poll2.id), k2)
 
         self.assertNotEqual(k1, k2)
+
+    def test_can_vote(self):
+        # Can vote by default
+        self.assertTrue(self.poll.can_vote())
+
+        # Even if request has no session
+        request = HttpRequest()
+        self.assertTrue(self.poll.can_vote(request))
+
+        # And if not voted yet
+        request.session = {self.poll.voted_key: False}
+        self.assertTrue(self.poll.can_vote(request))
+
+        # But cannot vote if user has already voted
+        request.session = {self.poll.voted_key: True}
+        self.assertFalse(self.poll.can_vote(request))

@@ -20,6 +20,11 @@ class Poll(models.Model):
     def voted_key(self):
         return 'cmsplugin_poll_voted_{i}'.format(i=self.id)
 
+    def can_vote(self, request=None):
+        if not request or not hasattr(request, 'session'):
+            return True
+        return not request.session.get(self.voted_key, False)
+
 
 class Choice(models.Model):
     poll = models.ForeignKey(Poll)
