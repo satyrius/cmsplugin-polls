@@ -40,6 +40,13 @@ class PollTest(TestCase):
         request.session = {self.poll._voted_key: True}
         self.assertFalse(self.poll.can_vote(request))
 
+    def test_cannot_vote_if_not_active(self):
+        self.assertTrue(self.poll.is_active)
+        self.assertTrue(self.poll.can_vote())
+
+        self.poll.is_active = False
+        self.assertFalse(self.poll.can_vote())
+
     @patch.object(Poll, 'can_vote', return_value=True)
     def test_vote(self, can_vote):
         yes = self.add_choice('Yes')

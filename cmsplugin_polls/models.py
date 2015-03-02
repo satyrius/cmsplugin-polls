@@ -5,6 +5,7 @@ from django.db.models import F
 
 class Poll(models.Model):
     question = models.CharField(max_length=200)
+    is_active = models.BooleanField(default=True)
 
     def __unicode__(self):
         return self.question
@@ -22,6 +23,8 @@ class Poll(models.Model):
         return 'cmsplugin_poll_voted_{i}'.format(i=self.id)
 
     def can_vote(self, request=None):
+        if not self.is_active:
+            return False
         if not request or not hasattr(request, 'session'):
             return True
         return not request.session.get(self._voted_key, False)
