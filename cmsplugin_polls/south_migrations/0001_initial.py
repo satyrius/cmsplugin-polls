@@ -12,6 +12,9 @@ class Migration(SchemaMigration):
         db.create_table(u'cmsplugin_polls_poll', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('question', self.gf('django.db.models.fields.CharField')(max_length=200)),
+            ('is_active', self.gf('django.db.models.fields.BooleanField')(default=True)),
+            ('starts_at', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
+            ('ends_at', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
         ))
         db.send_create_signal(u'cmsplugin_polls', ['Poll'])
 
@@ -74,8 +77,11 @@ class Migration(SchemaMigration):
         },
         u'cmsplugin_polls.poll': {
             'Meta': {'object_name': 'Poll'},
+            'ends_at': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'question': ('django.db.models.fields.CharField', [], {'max_length': '200'})
+            'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
+            'question': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
+            'starts_at': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'})
         },
         u'cmsplugin_polls.pollplugin': {
             'Meta': {'object_name': 'PollPlugin', '_ormbases': ['cms.CMSPlugin']},

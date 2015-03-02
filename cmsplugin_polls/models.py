@@ -7,7 +7,7 @@ from django.utils import timezone
 class Poll(models.Model):
     question = models.CharField(max_length=200)
     is_active = models.BooleanField(default=True)
-    starts_at = models.DateTimeField(auto_now_add=True)
+    starts_at = models.DateTimeField(null=True, blank=True)
     ends_at = models.DateTimeField(null=True, blank=True)
 
     def __unicode__(self):
