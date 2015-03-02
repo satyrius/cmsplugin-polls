@@ -21,7 +21,7 @@ def vote(request):
     if error:
         return http.HttpResponseBadRequest(error)
 
-    voted_key = 'cmsplugin_poll_voted_{i}'.format(i=poll.id)
+    voted_key = poll.voted_key
     if request.session.get(voted_key):
         if next_page:
             return http.HttpResponseRedirect(next_page)

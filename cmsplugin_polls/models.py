@@ -16,6 +16,10 @@ class Poll(models.Model):
     def max_votes(self):
         return self.choice_set.aggregate(models.Max('votes'))['votes__max']
 
+    @property
+    def voted_key(self):
+        return 'cmsplugin_poll_voted_{i}'.format(i=self.id)
+
 
 class Choice(models.Model):
     poll = models.ForeignKey(Poll)
