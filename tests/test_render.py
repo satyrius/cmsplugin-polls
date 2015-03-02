@@ -1,7 +1,9 @@
 from bs4 import BeautifulSoup
 from django.http import HttpRequest
 from django.template import Context, RequestContext
+from mock import patch
 
+from cmsplugin_polls.models import Poll
 from helpers import TestCase
 
 
@@ -53,3 +55,24 @@ class PollPluginRenderTest(TestCase):
         choices = {int(i['value']) for i in soup.form.find_all(type='radio')}
         self.assertEqual(
             choices, set(self.poll.choice_set.values_list('id', flat=True)))
+
+    def test_results(self):
+        self.add_choice('Yes', votes=10)
+        self.add_choice('No', votes=2)
+        plugin = self.add_plugin(poll=self.poll)
+
+        with patch.object(Poll, 'can_vote', return_value=False):
+            html = self.render(plugin)
+            soup = BeautifulSoup(html)
+
+        yes = soup.find_all('span', class_='label', text='Yes')[0]
+        quantity = yes.find_parent('div').find_all('div', class_='result-quantity')[0]
+        self.assertEqual(int(quantity.find(text=True)), 10)
+        bar = yes.find_parent('div').find_all('div', class_='result-bar')[0]
+        self.assertEqual(bar['style'], 'width: 100%')
+
+        no = soup.find_all('span', class_='label', text='No')[0]
+        quantity = no.find_parent('div').find_all('div', class_='result-quantity')[0]
+        self.assertEqual(int(quantity.find(text=True)), 2)
+        bar = no.find_parent('div').find_all('div', class_='result-bar')[0]
+        self.assertEqual(bar['style'], 'width: 20%')

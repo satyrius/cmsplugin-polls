@@ -1,0 +1,15 @@
+{% load poll_tags i18n %}
+<div class="survey-results">
+  <span class="survey-results-header">{% trans "Results" %}</span>
+  {% with poll.max_votes as total %}
+    {% for choice in poll.choice_set.iterator %}
+      <div class="survey-results-option">
+        <span class="label">{{ choice.text }}</span>
+        <div class="results-container">
+          <div style="width: {{ choice.votes|in_compare_to:total }}%" class="result-bar"></div>
+          <div class="result-quantity">{{ choice.votes }}</div>
+        </div>
+      </div>
+    {% endfor %}
+  {% endwith %}
+</div>

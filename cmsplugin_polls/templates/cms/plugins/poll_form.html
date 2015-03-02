@@ -1,10 +1,7 @@
 {% load i18n %}
 
-{% block "form_header" %}
-  <h1>{{ poll.question }}</h1>
-{% endblock %}
 {% block "form_tag" %}
-    <form method="POST" action="{% url "polls:vote" %}">
+<form method="POST" action="{% url "polls:vote" %}">
 {% endblock %}
   {% csrf_token %}
   <input type="hidden" name="poll" value="{{ poll.id }}"/>
@@ -22,5 +19,6 @@
   {% block "form_submit" %}
   <button type="submit">{% trans "Vote" %}</button>
   {% endblock %}
+{% block "form_tag_close" %}
 </form>
-{% block "form_footer" %}{% endblock %}
+{% endblock %}
