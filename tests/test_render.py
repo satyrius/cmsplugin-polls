@@ -66,13 +66,9 @@ class PollPluginRenderTest(TestCase):
             soup = BeautifulSoup(html)
 
         yes = soup.find_all('span', class_='label', text='Yes')[0]
-        quantity = yes.find_parent('div').find_all('div', class_='result-quantity')[0]
+        quantity = yes.find_parent('div').find_all('span', class_='votes')[0]
         self.assertEqual(int(quantity.find(text=True)), 10)
-        bar = yes.find_parent('div').find_all('div', class_='result-bar')[0]
-        self.assertEqual(bar['style'], 'width: 100%')
 
         no = soup.find_all('span', class_='label', text='No')[0]
-        quantity = no.find_parent('div').find_all('div', class_='result-quantity')[0]
+        quantity = no.find_parent('div').find_all('span', class_='votes')[0]
         self.assertEqual(int(quantity.find(text=True)), 2)
-        bar = no.find_parent('div').find_all('div', class_='result-bar')[0]
-        self.assertEqual(bar['style'], 'width: 20%')
