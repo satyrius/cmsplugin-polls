@@ -1,0 +1,8 @@
+[main]
+host = https://www.transifex.com
+
+[cmsplugin-polls.main]
+file_filter = cmsplugin_polls/locale/<lang>/LC_MESSAGES/django.po
+source_file = cmsplugin_polls/locale/en/LC_MESSAGES/django.po
+source_lang = en
+type = PO
