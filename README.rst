@@ -17,7 +17,7 @@ cmsplugin-polls
 
 Why?
 ====
-There is no established Polls plugin for DjangoCMS. Yes, `cmsplugin-poll <https://bitbucket.org/tonioo/cmsplugin-poll>`_ exists, 
+There is no established Polls plugin for DjangoCMS. Yes, `cmsplugin-poll <https://bitbucket.org/tonioo/cmsplugin-poll>`_ exists,
 but it's latest update was at 2013 and looks like it is abandoned. Personaly I want a simple plugin, that is up to date and support
 latest Django and DjangoCMS. So this one could be at the spot.
 
@@ -57,6 +57,10 @@ Roadmap
 =======
 - AJAX submiting out-of-box
 - Python 3 support
+
+Changelog
+=========
+The changelog can be found at `repo's release notes <https://github.com/satyrius/cmsplugin-polls/releases>`_
 
 Contributing
 ============
