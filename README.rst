@@ -7,11 +7,11 @@ cmsplugin-polls
 .. |ci| image:: https://travis-ci.org/satyrius/cmsplugin-polls.png?branch=master
     :target: https://travis-ci.org/satyrius/cmsplugin-polls
 
-.. |pypi| image:: https://pypip.in/version/cmsplugin_polls/badge.png?text=pypi
+.. |pypi| image:: https://img.shields.io/pypi/v/cmsplugin_polls.svg?label=pypi
     :target: https://pypi.python.org/pypi/cmsplugin-polls/
     :alt: Latest Version
 
-.. |status| image:: https://pypip.in/status/cmsplugin_polls/badge.png
+.. |status| image:: https://img.shields.io/pypi/status/cmsplugin_polls.svg
     :target: https://pypi.python.org/pypi/cmsplugin-polls/
     :alt: Development Status
 
